@@ -12,6 +12,14 @@ import { Job } from "../../types/jobs";
 
 const JobCard = ({ job }: { job: Job }) => {
   const [expanded, setExpanded] = useState(false);
+  const formattedDate = new Date(job.created_at).toLocaleDateString(
+    undefined,
+    {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }
+  );
 
   return (
     <Card className="w-full bg-gray-800 text-white border-gray-700">
@@ -21,7 +29,7 @@ const JobCard = ({ job }: { job: Job }) => {
             {job.name}
           </CardTitle>
           <CardDescription className="text-gray-400">
-            {new Date(job.creationDate).toLocaleDateString()}
+            {formattedDate}
           </CardDescription>
         </div>
         <Button
@@ -39,7 +47,7 @@ const JobCard = ({ job }: { job: Job }) => {
       </CardHeader>
       {expanded && (
         <CardContent className="text-gray-300">
-          <p className="mb-3">{job.description}</p>
+          <p className="mb-3 whitespace-pre-line">{job.description}</p>
           <div className="space-y-2">
             <p>
               <span className="font-semibold text-white">Required Skills:</span>{" "}
@@ -51,7 +59,7 @@ const JobCard = ({ job }: { job: Job }) => {
             </p>
             <p>
               <span className="font-semibold text-white">Salary:</span>{" "}
-              {job.salary}
+              {job.location}
             </p>
             <p>
               <span className="font-semibold text-white">Category:</span>{" "}

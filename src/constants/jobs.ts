@@ -1,4 +1,4 @@
-export const categories = [
+export const categories: string[] = [
   "AI / Research & Development",
   "Artificial Intelligence",
   "Financial Services",
@@ -6,4 +6,4 @@ export const categories = [
   "Software Engineering",
 ];
 
-export const jobsPerPage = 1;
+export const jobsPerPage = 6;

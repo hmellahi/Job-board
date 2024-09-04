@@ -16,29 +16,12 @@ import {
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { useQuery } from "react-query";
 
-// Assuming these components are created in separate files
-import JobCard from "./components/JobCard/JobCard";
-import Pagination from "./components/pagination/Pagination";
-import { categories, jobsPerPage } from "./constants/jobs";
-import { fetchJobs } from "./services/jobs";
-import { Job, JobData } from "./types/jobs";
-
-const loadFiltersFromLS = () => {
-  // Load filters from localStorage
-  const savedFilters = JSON.parse(localStorage.getItem("jobFilters") || "{}");
-
-  const {
-    searchTerm = "",
-    selectedCategory = "",
-    sortOption = "",
-  } = savedFilters;
-
-  return {
-    savedSearchTerm: searchTerm,
-    savedSelectedCategory: selectedCategory,
-    savedSortOption: sortOption,
-  };
-};
+import JobCard from "@/components/JobCard/JobCard";
+import Pagination from "@/components/pagination/Pagination";
+import { categories, jobsPerPage } from "@/constants/jobs";
+import { fetchJobs } from "@/services/jobs";
+import { Job, JobData } from "@/types/jobs";
+import loadFiltersFromLS from "./utils/loadFiltersFromLS";
 
 const JobListings = () => {
   const { savedSearchTerm, savedSelectedCategory, savedSortOption } =

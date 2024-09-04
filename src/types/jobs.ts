@@ -2,7 +2,7 @@ export interface Job {
   id: string;
   name: string;
   description: string;
-  requiredSkills: string[];
+  skills: string[];
   startDate: string;
   salary: string;
   category: string;
