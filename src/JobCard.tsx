@@ -8,8 +8,9 @@ import {
 } from "@/components/ui/Card";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
+import { Job } from "./types/jobs";
 
-const JobCard = ({ job }) => {
+const JobCard = ({ job }: { job: Job }) => {
   const [expanded, setExpanded] = useState(false);
 
   return (

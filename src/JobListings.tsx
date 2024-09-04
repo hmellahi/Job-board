@@ -1,25 +1,38 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
-import { useEffect, useState } from "react";
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/Select";
+import {
+  DragDropContext,
+  Draggable,
+  DropResult,
+  Droppable,
+} from "@hello-pangea/dnd";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 
 // Assuming these components are created in separate files
 import JobCard from "./JobCard";
-import Pagination from "./Pagination";
 import { fetchJobs } from "./api";
+import Pagination from "./components/pagination/Pagination";
+import { Job, JobData } from "./types/jobs";
+import { categories, jobsPerPage } from "./constants/jobs";
+
 
 const JobListings = () => {
-  const [jobs, setJobs] = useState([]);
-  const [filteredJobs, setFilteredJobs] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [sortOption, setSortOption] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [filteredJobs, setFilteredJobs] = useState<Job[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [sortOption, setSortOption] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const { data, isLoading, isError } = useQuery("jobs", fetchJobs);
+  const { data, isLoading, isError } = useQuery<JobData>("jobs", fetchJobs);
 
   useEffect(() => {
     if (data) {
@@ -30,15 +43,26 @@ const JobListings = () => {
 
   useEffect(() => {
     // Load filters from localStorage
-    const savedFilters = JSON.parse(localStorage.getItem("jobFilters"));
-    if (savedFilters) {
-      setSearchTerm(savedFilters.searchTerm);
-      setSelectedCategory(savedFilters.selectedCategory);
-      setSortOption(savedFilters.sortOption);
+    const savedFilters = JSON.parse(localStorage.getItem("jobFilters") || "{}");
+
+    if (!savedFilters) {
+      return;
     }
+
+    const {
+      searchTerm = "",
+      selectedCategory = "",
+      sortOption = "",
+    } = savedFilters;
+
+    setSearchTerm(searchTerm);
+    setSelectedCategory(selectedCategory);
+    setSortOption(sortOption);
   }, []);
 
   useEffect(() => {
+    filterJobs(searchTerm, selectedCategory, sortOption);
+
     // Save filters to localStorage
     localStorage.setItem(
       "jobFilters",
@@ -50,19 +74,16 @@ const JobListings = () => {
     );
   }, [searchTerm, selectedCategory, sortOption]);
 
-  const handleSearch = (event) => {
+  const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
-    filterJobs(event.target.value, selectedCategory, sortOption);
   };
 
-  const handleCategoryChange = (event) => {
-    setSelectedCategory(event.target.value);
-    filterJobs(searchTerm, event.target.value, sortOption);
+  const handleCategoryChange = (newSelectedCategory: string) => {
+    setSelectedCategory(newSelectedCategory);
   };
 
-  const handleSortChange = (event) => {
-    setSortOption(event.target.value);
-    filterJobs(searchTerm, selectedCategory, event.target.value);
+  const handleSortChange = (newSortField: string) => {
+    setSortOption(newSortField);
   };
 
   const resetFilters = () => {
@@ -73,7 +94,7 @@ const JobListings = () => {
     setCurrentPage(1);
   };
 
-  const filterJobs = (search, category, sort) => {
+  const filterJobs = (search: string, category: string, sort: string) => {
     let result = jobs.filter(
       (job) =>
         job.name.toLowerCase().includes(search.toLowerCase()) &&
@@ -82,7 +103,9 @@ const JobListings = () => {
 
     if (sort === "date") {
       result.sort(
-        (a, b) => new Date(b.creationDate) - new Date(a.creationDate)
+        (a, b) =>
+          new Date(b.creationDate).getTime() -
+          new Date(a.creationDate).getTime()
       );
     } else if (sort === "name") {
       result.sort((a, b) => a.name.localeCompare(b.name));
@@ -94,7 +117,7 @@ const JobListings = () => {
     setCurrentPage(1);
   };
 
-  const onDragEnd = (result) => {
+  const onDragEnd = (result: DropResult) => {
     if (!result.destination) return;
 
     const items = Array.from(filteredJobs);
@@ -104,7 +127,7 @@ const JobListings = () => {
     setFilteredJobs(items);
   };
 
-  const handlePageChange = (pageNumber) => {
+  const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
 
@@ -114,12 +137,12 @@ const JobListings = () => {
       <div className="text-center py-10 text-red-500">Error fetching jobs</div>
     );
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const indexOfLastItem = currentPage * jobsPerPage;
+  const indexOfFirstItem = indexOfLastItem - jobsPerPage;
   const currentItems = filteredJobs.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="p-28 bg-[#E8E8E8]">
       <div className="mb-4 flex flex-wrap items-center gap-4">
         <Input
           type="text"
@@ -128,23 +151,28 @@ const JobListings = () => {
           onChange={handleSearch}
           className="flex-grow"
         />
-        <Select
-          value={selectedCategory}
-          onChange={handleCategoryChange}
-          className="w-full sm:w-auto"
-        >
-          <option value="">All Categories</option>
-          {/* Add category options here */}
+
+        <Select value={selectedCategory} onValueChange={handleCategoryChange}>
+          <SelectTrigger className="w-full sm:w-auto">
+            <SelectValue placeholder="All Categories" />
+          </SelectTrigger>
+          <SelectContent>
+            {categories.map((category) => (
+              <SelectItem key={category} value={category}>
+                {category}
+              </SelectItem>
+            ))}
+          </SelectContent>
         </Select>
-        <Select
-          value={sortOption}
-          onChange={handleSortChange}
-          className="w-full sm:w-auto"
-        >
-          <option value="">Sort by</option>
-          <option value="date">Date</option>
-          <option value="name">Name</option>
-          <option value="category">Category</option>
+        <Select value={sortOption} onValueChange={handleSortChange}>
+          <SelectTrigger className="w-full sm:w-auto">
+            <SelectValue placeholder="Sort by" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="date">Date</SelectItem>
+            <SelectItem value="name">Name</SelectItem>
+            <SelectItem value="category">Category</SelectItem>
+          </SelectContent>
         </Select>
         <Button onClick={resetFilters}>Reset Filters</Button>
       </div>
@@ -184,7 +212,7 @@ const JobListings = () => {
       <Pagination
         currentPage={currentPage}
         totalItems={filteredJobs.length}
-        itemsPerPage={itemsPerPage}
+        itemsPerPage={jobsPerPage}
         onPageChange={handlePageChange}
       />
     </div>
