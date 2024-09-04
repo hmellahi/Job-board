@@ -158,7 +158,7 @@ const JobListings = () => {
           placeholder="Search jobs..."
           value={searchTerm}
           onChange={handleSearch}
-          className="flex-grow bg-gray-800 text-white placeholder-gray-400"
+          className="flex-grow bg-gray-800 text-white placeholder-gray-400inline-block"
         />
 
         <Select value={selectedCategory} onValueChange={handleCategoryChange}>

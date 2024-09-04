@@ -22,7 +22,7 @@ const JobCard = ({ job }: { job: Job }) => {
   );
 
   return (
-    <Card className="w-full bg-gray-800 text-white border-gray-700">
+    <Card className="w-full !bg-gray-700 text-white">
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
           <CardTitle className="text-xl font-bold text-white">

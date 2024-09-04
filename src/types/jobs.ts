@@ -11,5 +11,5 @@ export interface Job extends JobPost {
 export interface JobData {
   jobs: Job[];
   total: number;
-  hasMore: number;
+  hasMore: boolean;
 }
