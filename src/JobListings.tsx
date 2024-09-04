@@ -13,26 +13,58 @@ import {
   DropResult,
   Droppable,
 } from "@hello-pangea/dnd";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { useQuery } from "react-query";
 
 // Assuming these components are created in separate files
-import JobCard from "./JobCard";
-import { fetchJobs } from "./api";
+import JobCard from "./components/JobCard/JobCard";
 import Pagination from "./components/pagination/Pagination";
-import { Job, JobData } from "./types/jobs";
 import { categories, jobsPerPage } from "./constants/jobs";
+import { fetchJobs } from "./services/jobs";
+import { Job, JobData } from "./types/jobs";
 
+const loadFiltersFromLS = () => {
+  // Load filters from localStorage
+  const savedFilters = JSON.parse(localStorage.getItem("jobFilters") || "{}");
+
+  const {
+    searchTerm = "",
+    selectedCategory = "",
+    sortOption = "",
+  } = savedFilters;
+
+  return {
+    savedSearchTerm: searchTerm,
+    savedSelectedCategory: selectedCategory,
+    savedSortOption: sortOption,
+  };
+};
 
 const JobListings = () => {
+  const { savedSearchTerm, savedSelectedCategory, savedSortOption } =
+    loadFiltersFromLS();
+
   const [jobs, setJobs] = useState<Job[]>([]);
   const [filteredJobs, setFilteredJobs] = useState<Job[]>([]);
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
-  const [sortOption, setSortOption] = useState<string>("");
+  const [searchTerm, setSearchTerm] = useState<string>(savedSearchTerm);
+  const [selectedCategory, setSelectedCategory] = useState<string>(
+    savedSelectedCategory
+  );
+  const [sortOption, setSortOption] = useState<string>(savedSortOption);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const { data, isLoading, isError } = useQuery<JobData>("jobs", fetchJobs);
+  const { data, isLoading, isError } = useQuery<JobData>(
+    "jobs",
+    () => fetchJobs(currentPage),
+    {
+      retry: 0,
+    }
+  );
+
+  const noFiltersApplied = useMemo(
+    () => searchTerm === "" && selectedCategory === "" && sortOption === "",
+    [searchTerm, selectedCategory, sortOption]
+  );
 
   useEffect(() => {
     if (data) {
@@ -40,25 +72,6 @@ const JobListings = () => {
       setFilteredJobs(data.jobs);
     }
   }, [data]);
-
-  useEffect(() => {
-    // Load filters from localStorage
-    const savedFilters = JSON.parse(localStorage.getItem("jobFilters") || "{}");
-
-    if (!savedFilters) {
-      return;
-    }
-
-    const {
-      searchTerm = "",
-      selectedCategory = "",
-      sortOption = "",
-    } = savedFilters;
-
-    setSearchTerm(searchTerm);
-    setSelectedCategory(selectedCategory);
-    setSortOption(sortOption);
-  }, []);
 
   useEffect(() => {
     filterJobs(searchTerm, selectedCategory, sortOption);
@@ -131,32 +144,36 @@ const JobListings = () => {
     setCurrentPage(pageNumber);
   };
 
-  if (isLoading) return <div className="text-center py-10">Loading...</div>;
-  if (isError)
+  if (isLoading) {
+    return <div className="text-center py-10 text-gray-400">Loading...</div>;
+  }
+
+  if (isError) {
     return (
-      <div className="text-center py-10 text-red-500">Error fetching jobs</div>
+      <div className="text-center py-10 text-red-400">Error fetching jobs</div>
     );
+  }
 
   const indexOfLastItem = currentPage * jobsPerPage;
   const indexOfFirstItem = indexOfLastItem - jobsPerPage;
   const currentItems = filteredJobs.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
-    <div className="p-28 bg-[#E8E8E8]">
+    <div className="p-28 bg-[#222222] text-white h-screen">
       <div className="mb-4 flex flex-wrap items-center gap-4">
         <Input
           type="text"
           placeholder="Search jobs..."
           value={searchTerm}
           onChange={handleSearch}
-          className="flex-grow"
+          className="flex-grow bg-gray-800 text-white placeholder-gray-400"
         />
 
         <Select value={selectedCategory} onValueChange={handleCategoryChange}>
-          <SelectTrigger className="w-full sm:w-auto">
+          <SelectTrigger className="w-full sm:w-auto bg-gray-800 text-white">
             <SelectValue placeholder="All Categories" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-gray-800 text-white">
             {categories.map((category) => (
               <SelectItem key={category} value={category}>
                 {category}
@@ -165,16 +182,22 @@ const JobListings = () => {
           </SelectContent>
         </Select>
         <Select value={sortOption} onValueChange={handleSortChange}>
-          <SelectTrigger className="w-full sm:w-auto">
+          <SelectTrigger className="w-full sm:w-auto bg-gray-800 text-white">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-gray-800 text-white">
             <SelectItem value="date">Date</SelectItem>
             <SelectItem value="name">Name</SelectItem>
             <SelectItem value="category">Category</SelectItem>
           </SelectContent>
         </Select>
-        <Button onClick={resetFilters}>Reset Filters</Button>
+        <Button
+          disabled={noFiltersApplied}
+          onClick={resetFilters}
+          className="bg-gray-700 hover:bg-gray-600"
+        >
+          Reset Filters
+        </Button>
       </div>
 
       {filteredJobs.length === 0 ? (
@@ -195,7 +218,7 @@ const JobListings = () => {
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
-                        className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300"
+                        className="shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300"
                       >
                         <JobCard job={job} />
                       </li>

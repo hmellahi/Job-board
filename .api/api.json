@@ -1,0 +1,11 @@
+{
+  "version": "1.0",
+  "apis": [
+    {
+      "identifier": "hrflow",
+      "source": "@hrflow/v2.4#3soy8h2zlp8835hd",
+      "integrity": "sha512-Y4AOttBWgKLN42qz1c5Nq4cpDr+6Rk7Gg1EwmK83NlGlBO+E0nEPhIdQooZtQNe7PH5nYDQZDCfv6/UaANkFpg==",
+      "installerVersion": "6.1.2"
+    }
+  ]
+}
