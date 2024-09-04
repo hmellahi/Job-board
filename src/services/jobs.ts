@@ -1,8 +1,9 @@
+import { jobsPerPage } from "@/constants/jobs";
 import { JobPost, JobsApiResponse, Skill, Tag } from "@/types/JobsApiResponse";
 import { JobData } from "@/types/jobs";
-import mock from "./mock";
+import axios from "axios";
 
-const mapJobData = (jobsResponse: JobsApiResponse, page:number): JobData => {
+const mapJobData = (jobsResponse: JobsApiResponse, page: number): JobData => {
   const {
     meta: { total, maxPage },
     data: { jobs },
@@ -23,33 +24,26 @@ const mapJobData = (jobsResponse: JobsApiResponse, page:number): JobData => {
       };
     }),
     total,
-    hasMore : page < maxPage
+    hasMore: page < maxPage,
   };
 };
 
 export const fetchJobs = async (page: number) => {
   try {
-    console.log('fetch ' + page)
-    const data = mapJobData(mock as any, page);
-    console.log(data);
-    return data;
-    // const { VITE_API_KEY, VITE_API_URL, VITE_BOARD_KEY } = import.meta.env;
+    console.log("fetch " + page);
+    const { VITE_API_KEY, VITE_API_URL, VITE_BOARD_KEY } = import.meta.env;
 
-    // const options = {
-    //   params: { page, board_keys: [VITE_BOARD_KEY] },
-    //   headers: {
-    //     accept: "application/json",
-    //     "X-Api-Key": VITE_API_KEY,
-    //     "X-USER-EMAIL": "hmellahi@proton.com",
-    //   },
-    // };
+    const options = {
+      params: { page, board_keys: [VITE_BOARD_KEY], limit: jobsPerPage },
+      headers: {
+        accept: "application/json",
+        "X-Api-Key": VITE_API_KEY,
+        "X-USER-EMAIL": "hmellahi@proton.com",
+      },
+    };
 
-    // const { data } = await axios.get(VITE_API_URL, options);
-    // const { jobs } = mapJobData(mock.data);
-    // console.log(jobs);
-    // return {
-    //   jobs
-    // };
+    const { data } = await axios.get(VITE_API_URL, options);
+    return mapJobData(data, page);
   } catch (error) {
     console.error("Error fetching jobs:", error);
     throw error;
