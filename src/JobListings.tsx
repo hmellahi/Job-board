@@ -21,6 +21,7 @@ import Pagination from "@/components/pagination/Pagination";
 import { categories, jobsPerPage } from "@/constants/jobs";
 import { fetchJobs } from "@/services/jobs";
 import { Job, JobData } from "@/types/jobs";
+import { queryClient } from "./App";
 import loadFiltersFromLS from "./utils/loadFiltersFromLS";
 
 const JobListings = () => {
@@ -36,13 +37,21 @@ const JobListings = () => {
   const [sortOption, setSortOption] = useState<string>(savedSortOption);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const { data, isLoading, isError } = useQuery<JobData>(
-    "jobs",
-    () => fetchJobs(currentPage),
-    {
-      retry: 0,
+  const { data, isLoading, isError, isPreviousData } = useQuery<JobData>({
+    queryKey: ["jobs", currentPage],
+    queryFn: () => fetchJobs(currentPage),
+    keepPreviousData: true,
+  });
+
+  // Prefetch the next page!
+  useEffect(() => {
+    if (!isPreviousData && data?.hasMore) {
+      queryClient.prefetchQuery({
+        queryKey: ["jobs", currentPage + 1],
+        queryFn: () => fetchJobs(currentPage + 1),
+      });
     }
-  );
+  }, [data, isPreviousData, currentPage, queryClient]);
 
   const noFiltersApplied = useMemo(
     () => searchTerm === "" && selectedCategory === "" && sortOption === "",
@@ -58,6 +67,7 @@ const JobListings = () => {
 
   useEffect(() => {
     filterJobs(searchTerm, selectedCategory, sortOption);
+    console.log({ searchTerm, selectedCategory, sortOption });
 
     // Save filters to localStorage
     localStorage.setItem(
@@ -91,17 +101,18 @@ const JobListings = () => {
   };
 
   const filterJobs = (search: string, category: string, sort: string) => {
+    console.log({ search, category, sort });
     let result = jobs.filter(
       (job) =>
         job.name.toLowerCase().includes(search.toLowerCase()) &&
         (category === "" || job.category === category)
     );
+    console.log({ result });
 
     if (sort === "date") {
       result.sort(
         (a, b) =>
-          new Date(b.creationDate).getTime() -
-          new Date(a.creationDate).getTime()
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
       );
     } else if (sort === "name") {
       result.sort((a, b) => a.name.localeCompare(b.name));
@@ -137,12 +148,10 @@ const JobListings = () => {
     );
   }
 
-  const indexOfLastItem = currentPage * jobsPerPage;
-  const indexOfFirstItem = indexOfLastItem - jobsPerPage;
-  const currentItems = filteredJobs.slice(indexOfFirstItem, indexOfLastItem);
+  const totalJobs = data?.total;
 
   return (
-    <div className="p-28 bg-[#222222] text-white h-screen">
+    <div className="p-4 sm:p-12 md:p-28 text-white h-full">
       <div className="mb-4 flex flex-wrap items-center gap-4">
         <Input
           type="text"
@@ -184,7 +193,7 @@ const JobListings = () => {
       </div>
 
       {filteredJobs.length === 0 ? (
-        <div className="text-center py-10">No jobs found</div>
+        <div className="text-center py-10 text-black">No jobs found</div>
       ) : (
         <DragDropContext onDragEnd={onDragEnd}>
           <Droppable droppableId="jobs">
@@ -194,8 +203,12 @@ const JobListings = () => {
                 ref={provided.innerRef}
                 className="space-y-4"
               >
-                {currentItems.map((job, index) => (
-                  <Draggable key={job.id} draggableId={job.id} index={index}>
+                {filteredJobs.map((job, index) => (
+                  <Draggable
+                    key={job.id}
+                    draggableId={String(job.id)}
+                    index={index}
+                  >
                     {(provided) => (
                       <li
                         ref={provided.innerRef}
@@ -217,7 +230,7 @@ const JobListings = () => {
 
       <Pagination
         currentPage={currentPage}
-        totalItems={filteredJobs.length}
+        totalItems={totalJobs}
         itemsPerPage={jobsPerPage}
         onPageChange={handlePageChange}
       />

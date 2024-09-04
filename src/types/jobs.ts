@@ -1,15 +1,15 @@
-export interface Job {
-  id: string;
+import { JobPost } from "./JobsApiResponse";
+
+export interface Job extends JobPost {
   name: string;
-  description: string;
-  skills: string[];
   startDate: string;
-  salary: string;
   category: string;
   company: string;
-  creationDate: string;
+  requiredSkills: string[];
 }
 
 export interface JobData {
   jobs: Job[];
+  total: number;
+  hasMore: number;
 }

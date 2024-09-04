@@ -1,32 +1,38 @@
+import { JobPost, JobsApiResponse, Skill, Tag } from "@/types/JobsApiResponse";
 import { JobData } from "@/types/jobs";
 import mock from "./mock";
 
-const mapJobData = (data: any): JobData => {
+const mapJobData = (jobsResponse: JobsApiResponse, page:number): JobData => {
+  const {
+    meta: { total, maxPage },
+    data: { jobs },
+  } = jobsResponse;
+
   return {
-    jobs: data.jobs.map((job: any) => {
-      const companyTag = job.tags.find((tag: any) => tag.name === "Company");
+    jobs: jobs.map((job: JobPost) => {
+      const companyTag = job.tags.find((tag: Tag) => tag.name === "company");
+      const categoryTag = job.tags.find((tag: Tag) => tag.name === "category");
 
       return {
         ...job,
-        description: job.summary || "",
-        requiredSkills: job.skills.map((skill: any) => skill.name),
+        requiredSkills: job.skills.map((skill: Skill) => skill.name),
         startDate:
           job.ranges_date.length > 0 ? job.ranges_date[0].value_min : "",
-        location: job.location?.text,
-        category: job.tags.find((tag: any) => tag.name === "category")?.value,
-        company: companyTag?.value,
+        category: categoryTag?.value || "",
+        company: companyTag?.value || "",
       };
     }),
+    total,
+    hasMore : page < maxPage
   };
 };
 
 export const fetchJobs = async (page: number) => {
   try {
-    const { jobs } = mapJobData(mock.data);
-    console.log(jobs);
-    return {
-      jobs,
-    };
+    console.log('fetch ' + page)
+    const data = mapJobData(mock as any, page);
+    console.log(data);
+    return data;
     // const { VITE_API_KEY, VITE_API_URL, VITE_BOARD_KEY } = import.meta.env;
 
     // const options = {

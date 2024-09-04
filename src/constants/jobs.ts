@@ -6,4 +6,4 @@ export const categories: string[] = [
   "Software Engineering",
 ];
 
-export const jobsPerPage = 6;
+export const jobsPerPage = 10;

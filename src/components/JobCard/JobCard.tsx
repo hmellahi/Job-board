@@ -47,7 +47,7 @@ const JobCard = ({ job }: { job: Job }) => {
       </CardHeader>
       {expanded && (
         <CardContent className="text-gray-300">
-          <p className="mb-3 whitespace-pre-line">{job.description}</p>
+          <p className="mb-3 whitespace-pre-line">{job.summary}</p>
           <div className="space-y-2">
             <p>
               <span className="font-semibold text-white">Required Skills:</span>{" "}
@@ -59,7 +59,7 @@ const JobCard = ({ job }: { job: Job }) => {
             </p>
             <p>
               <span className="font-semibold text-white">Salary:</span>{" "}
-              {job.location}
+              {job.location.text}
             </p>
             <p>
               <span className="font-semibold text-white">Category:</span>{" "}
