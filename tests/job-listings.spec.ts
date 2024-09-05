@@ -127,7 +127,7 @@ test.describe("Job Listings E2E Tests", () => {
     // Perform the drag and drop operation
     await page.mouse.move(firstJobCenter.x, firstJobCenter.y);
     await page.mouse.down();
-    await page.mouse.move(secondJobCenter.x, secondJobCenter.y, { steps: 70 });
+    await page.mouse.move(secondJobCenter.x, secondJobCenter.y, { steps: 20 });
     await page.mouse.up();
 
     // Wait for any animations or updates to complete
