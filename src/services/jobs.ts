@@ -28,11 +28,11 @@ const mapJobData = (jobsResponse: JobsApiResponse, page: number): JobData => {
   };
 };
 
+const { VITE_API_KEY, VITE_API_URL, VITE_BOARD_KEY, VITE_USER_EMAIL } =
+  import.meta.env;
+
 export const fetchJobs = async (page: number) => {
   try {
-    const { VITE_API_KEY, VITE_API_URL, VITE_BOARD_KEY, VITE_USER_EMAIL } =
-      import.meta.env;
-
     const options = {
       params: { page, board_keys: [VITE_BOARD_KEY], limit: jobsPerPage },
       headers: {
