@@ -6,37 +6,39 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/Card";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import {  ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
 import { Job } from "../../types/jobs";
+import { Badge } from "../ui/badge";
 
 const JobCard = ({ job }: { job: Job }) => {
   const [expanded, setExpanded] = useState(false);
-  const formattedDate = new Date(job.created_at).toLocaleDateString(
-    undefined,
-    {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    }
-  );
+  const formattedDate = new Date(job.created_at).toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 
   return (
-    <Card className="w-full !bg-gray-700 text-white">
+    <Card className="w-full !bg-gray-700 text-white job-card">
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
-          <CardTitle className="text-xl font-bold text-white">
+          <CardTitle className="job-title ext-xl font-bold text-white">
             {job.name}
           </CardTitle>
           <CardDescription className="text-gray-400">
             {formattedDate}
           </CardDescription>
+          <Badge>{job.category}</Badge>
         </div>
         <Button
           variant="ghost"
           size="sm"
           onClick={() => setExpanded(!expanded)}
           className="text-gray-400 hover:text-white hover:bg-gray-700"
+          aria-label={expanded ? "Collapse job details" : "Expand job details"}
+          aria-expanded={expanded}
+          aria-controls={`job-details-${job.id}`}
         >
           {expanded ? (
             <ChevronUp className="h-5 w-5" />
@@ -46,7 +48,7 @@ const JobCard = ({ job }: { job: Job }) => {
         </Button>
       </CardHeader>
       {expanded && (
-        <CardContent className="text-gray-300">
+        <CardContent className="text-gray-300 job-card-details">
           <p className="mb-3 whitespace-pre-line">{job.summary}</p>
           <div className="space-y-2">
             <p>

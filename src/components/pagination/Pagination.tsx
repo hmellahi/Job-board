@@ -21,7 +21,7 @@ const Pagination = ({
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   return (
-    <div className="flex justify-center items-center space-x-2 mt-4 text-black">
+    <div className="pagination flex justify-center items-center space-x-2 mt-4 text-black">
       <Button
         className="pagination-btn"
         onClick={() => onPageChange(currentPage - 1)}

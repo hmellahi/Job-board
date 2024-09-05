@@ -43,42 +43,10 @@ const JobListings = () => {
     keepPreviousData: true,
   });
 
-  // Prefetch the next page!
-  useEffect(() => {
-    if (!isPreviousData && data?.hasMore) {
-      queryClient.prefetchQuery({
-        queryKey: ["jobs", currentPage + 1],
-        queryFn: () => fetchJobs(currentPage + 1),
-      });
-    }
-  }, [data, isPreviousData, currentPage, queryClient]);
-
   const noFiltersApplied = useMemo(
     () => searchTerm === "" && selectedCategory === "" && sortOption === "",
     [searchTerm, selectedCategory, sortOption]
   );
-
-  useEffect(() => {
-    if (data) {
-      setJobs(data.jobs);
-      setFilteredJobs(data.jobs);
-    }
-  }, [data]);
-
-  useEffect(() => {
-    filterJobs(searchTerm, selectedCategory, sortOption);
-    console.log({ searchTerm, selectedCategory, sortOption });
-
-    // Save filters to localStorage
-    localStorage.setItem(
-      "jobFilters",
-      JSON.stringify({
-        searchTerm,
-        selectedCategory,
-        sortOption,
-      })
-    );
-  }, [searchTerm, selectedCategory, sortOption]);
 
   const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
@@ -100,14 +68,17 @@ const JobListings = () => {
     setCurrentPage(1);
   };
 
-  const filterJobs = (search: string, category: string, sort: string) => {
-    console.log({ search, category, sort });
-    let result = jobs.filter(
+  const filterJobs = (
+    jobsList: Job[],
+    search: string,
+    category: string,
+    sort: string
+  ) => {
+    let result = jobsList.filter(
       (job) =>
         job.name.toLowerCase().includes(search.toLowerCase()) &&
         (category === "" || job.category === category)
     );
-    console.log({ result });
 
     if (sort === "date") {
       result.sort(
@@ -121,7 +92,6 @@ const JobListings = () => {
     }
 
     setFilteredJobs(result);
-    setCurrentPage(1);
   };
 
   const onDragEnd = (result: DropResult) => {
@@ -138,6 +108,41 @@ const JobListings = () => {
     setCurrentPage(pageNumber);
   };
 
+  // Prefetch the next page!
+  useEffect(() => {
+    if (!isPreviousData && data?.hasMore) {
+      queryClient.prefetchQuery({
+        queryKey: ["jobs", currentPage + 1],
+        queryFn: () => fetchJobs(currentPage + 1),
+      });
+    }
+  }, [data, isPreviousData, currentPage, queryClient]);
+
+  useEffect(() => {
+    if (data) {
+      const { jobs } = data;
+      setJobs(jobs);
+      filterJobs(jobs, searchTerm, selectedCategory, sortOption);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    filterJobs(jobs, searchTerm, selectedCategory, sortOption);
+    setCurrentPage(1);
+
+    console.log({ searchTerm, selectedCategory, sortOption });
+
+    // Save filters to localStorage
+    localStorage.setItem(
+      "jobFilters",
+      JSON.stringify({
+        searchTerm,
+        selectedCategory,
+        sortOption,
+      })
+    );
+  }, [searchTerm, selectedCategory, sortOption]);
+
   if (isLoading) {
     return <div className="text-center py-10 text-gray-400">Loading...</div>;
   }
@@ -152,14 +157,16 @@ const JobListings = () => {
 
   return (
     <div className="p-4 sm:p-12 md:p-28 text-white h-full">
-      <div className="mb-4 flex flex-wrap items-center gap-4">
-        <Input
-          type="text"
-          placeholder="Search jobs..."
-          value={searchTerm}
-          onChange={handleSearch}
-          className="flex-grow bg-gray-800 text-white placeholder-gray-400inline-block"
-        />
+      <div className="mb-10 flex flex-wrap items-center gap-4 ">
+        <div>
+          <Input
+            type="text"
+            placeholder="Search jobs..."
+            value={searchTerm}
+            onChange={handleSearch}
+            className="flex-grow bg-gray-800 text-white placeholder-gray-400 inline-block"
+          />
+        </div>
 
         <Select value={selectedCategory} onValueChange={handleCategoryChange}>
           <SelectTrigger className="w-full sm:w-auto bg-gray-800 text-white">
@@ -201,7 +208,7 @@ const JobListings = () => {
               <ul
                 {...provided.droppableProps}
                 ref={provided.innerRef}
-                className="space-y-4"
+                className="space-y-4 job-listings"
               >
                 {filteredJobs.map((job, index) => (
                   <Draggable
