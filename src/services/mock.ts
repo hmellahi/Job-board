@@ -91,7 +91,7 @@ const mock = {
         tags: [
           {
             name: "Company",
-            value: "HrFlow.ai",
+            value: "Job-board.ai",
           },
           {
             name: "Type",
@@ -202,7 +202,7 @@ const mock = {
         tags: [
           {
             name: "company",
-            value: "HrFlow.ai",
+            value: "Job-board.ai",
           },
           {
             name: "type",
@@ -307,7 +307,7 @@ const mock = {
         tags: [
           {
             name: "company",
-            value: "HrFlow.ai",
+            value: "Job-board.ai",
           },
           {
             name: "type",
@@ -432,7 +432,7 @@ const mock = {
         tags: [
           {
             name: "company",
-            value: "HrFlow.ai",
+            value: "Job-board.ai",
           },
           {
             name: "type",
@@ -542,7 +542,7 @@ const mock = {
         tags: [
           {
             name: "company",
-            value: "HrFlow.ai",
+            value: "Job-board.ai",
           },
           {
             name: "type",
@@ -579,7 +579,7 @@ const mock = {
         url: "",
         picture: null,
         summary:
-          "We’re looking for a Director of Digital Marketing to lead HrFlow.ai's digital marketing strategy. Reporting to the VP Marketing, you’ll be responsible for the design and development of HrFlow.ai, success of our earned and owned digital marketing campaigns, management of the advertising budget, execution of partner marketing programs, development of email nurtures, and the design and development of content and all creative assets. As a leader in the marketing team, you will ensure goals are established, plans are created and execution across all of HrFlow’s digital touchpoints are flawless. In this role you’ll manage a small team of digital marketers, our external design and development agencies, and work hand-in-hand with the product, product marketing, customer and partner marketing teams to ensure deadlines are met and goals are achieved. You’ll lead our Account Based Marketing approach and collaborate with the sales organization to ensure alignment on process, follow-up and messaging to prospects.",
+          "We’re looking for a Director of Digital Marketing to lead Job-board.ai's digital marketing strategy. Reporting to the VP Marketing, you’ll be responsible for the design and development of Job-board.ai, success of our earned and owned digital marketing campaigns, management of the advertising budget, execution of partner marketing programs, development of email nurtures, and the design and development of content and all creative assets. As a leader in the marketing team, you will ensure goals are established, plans are created and execution across all of Job-board’s digital touchpoints are flawless. In this role you’ll manage a small team of digital marketers, our external design and development agencies, and work hand-in-hand with the product, product marketing, customer and partner marketing teams to ensure deadlines are met and goals are achieved. You’ll lead our Account Based Marketing approach and collaborate with the sales organization to ensure alignment on process, follow-up and messaging to prospects.",
         location: {
           text: "San Francisco, CA, USA",
           lat: 37.7749295,
@@ -652,7 +652,7 @@ const mock = {
         tags: [
           {
             name: "company",
-            value: "HrFlow.ai",
+            value: "Job-board.ai",
           },
           {
             name: "type",
@@ -767,7 +767,7 @@ const mock = {
         tags: [
           {
             name: "company",
-            value: "HrFlow.ai",
+            value: "Job-board.ai",
           },
           {
             name: "type",
@@ -887,7 +887,7 @@ const mock = {
         tags: [
           {
             name: "company",
-            value: "Hrflow.ai",
+            value: "Job-board.ai",
           },
           {
             name: "type",
@@ -998,7 +998,7 @@ const mock = {
         tags: [
           {
             name: "company",
-            value: "HrFlow.ai",
+            value: "Job-board.ai",
           },
           {
             name: "type",
@@ -1103,7 +1103,7 @@ const mock = {
         tags: [
           {
             name: "company",
-            value: "HrFlow.ai",
+            value: "Job-board.ai",
           },
           {
             name: "type",
@@ -1228,7 +1228,7 @@ const mock = {
         tags: [
           {
             name: "company",
-            value: "HrFlow.ai",
+            value: "Job-board.ai",
           },
           {
             name: "type",
@@ -1338,7 +1338,7 @@ const mock = {
         tags: [
           {
             name: "company",
-            value: "HrFlow.ai",
+            value: "Job-board.ai",
           },
           {
             name: "type",
@@ -1375,7 +1375,7 @@ const mock = {
         url: "",
         picture: null,
         summary:
-          "We’re looking for a Director of Digital Marketing to lead HrFlow.ai's digital marketing strategy. Reporting to the VP Marketing, you’ll be responsible for the design and development of HrFlow.ai, success of our earned and owned digital marketing campaigns, management of the advertising budget, execution of partner marketing programs, development of email nurtures, and the design and development of content and all creative assets. As a leader in the marketing team, you will ensure goals are established, plans are created and execution across all of HrFlow’s digital touchpoints are flawless. In this role you’ll manage a small team of digital marketers, our external design and development agencies, and work hand-in-hand with the product, product marketing, customer and partner marketing teams to ensure deadlines are met and goals are achieved. You’ll lead our Account Based Marketing approach and collaborate with the sales organization to ensure alignment on process, follow-up and messaging to prospects.",
+          "We’re looking for a Director of Digital Marketing to lead Job-board.ai's digital marketing strategy. Reporting to the VP Marketing, you’ll be responsible for the design and development of Job-board.ai, success of our earned and owned digital marketing campaigns, management of the advertising budget, execution of partner marketing programs, development of email nurtures, and the design and development of content and all creative assets. As a leader in the marketing team, you will ensure goals are established, plans are created and execution across all of Job-board’s digital touchpoints are flawless. In this role you’ll manage a small team of digital marketers, our external design and development agencies, and work hand-in-hand with the product, product marketing, customer and partner marketing teams to ensure deadlines are met and goals are achieved. You’ll lead our Account Based Marketing approach and collaborate with the sales organization to ensure alignment on process, follow-up and messaging to prospects.",
         location: {
           text: "San Francisco, CA, USA",
           lat: 37.7749295,
@@ -1448,7 +1448,7 @@ const mock = {
         tags: [
           {
             name: "company",
-            value: "HrFlow.ai",
+            value: "Job-board.ai",
           },
           {
             name: "type",
@@ -1563,7 +1563,7 @@ const mock = {
         tags: [
           {
             name: "company",
-            value: "HrFlow.ai",
+            value: "Job-board.ai",
           },
           {
             name: "type",
@@ -1683,7 +1683,7 @@ const mock = {
         tags: [
           {
             name: "company",
-            value: "Hrflow.ai",
+            value: "Job-board.ai",
           },
           {
             name: "type",
