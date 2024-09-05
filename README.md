@@ -51,24 +51,13 @@ Follow these steps to get started with the react-vite-ui template:
    pnpm dev
    ```
 
-5. Run the E2E tests:
-
-   ```bash
-   npx playwright test
-   ```
-
-6. Build the project & Run it:
-
-   ```bash
-   pnpm build && pnpm preview
-   ```
-
 ## 📜 Available Scripts
 
 - pnpm dev - Starts the development server.
 - pnpm build - Builds the production-ready code.
 - pnpm lint - Runs ESLint to analyze and lint the code.
 - pnpm preview - Starts the Vite development server in preview mode.
+- npx playwright test - Run the E2E tests.
 
 ## 📂 Project Structure
 
@@ -82,7 +71,7 @@ react-vite-ui/
   │   ├── components/    # React components
   │   │   └── ui/        # shadc/ui components
   │   ├── styles/        # CSS stylesheets
-  │   ├── lib/           # Utility functions
+  │   ├── utils/         # Utility functions
   │   ├── App.tsx        # Application entry point
   │   └── index.tsx      # Main rendering file
   ├── .eslintrc.json     # ESLint configuration
