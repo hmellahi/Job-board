@@ -51,6 +51,18 @@ Follow these steps to get started with the react-vite-ui template:
    pnpm dev
    ```
 
+5. Run the E2E tests:
+
+   ```bash
+   npx playwright test
+   ```
+
+6. Build the project & Run it:
+
+   ```bash
+   pnpm build && pnpm preview
+   ```
+
 ## 📜 Available Scripts
 
 - pnpm dev - Starts the development server.
