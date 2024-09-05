@@ -1,5 +1,5 @@
+import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { Button } from "./components/ui/Button";
 import {
   Select,
   SelectContent,
@@ -16,13 +16,13 @@ import {
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { useQuery } from "react-query";
 
+import { queryClient } from "@/App";
 import JobCard from "@/components/JobCard/JobCard";
 import Pagination from "@/components/pagination/Pagination";
 import { categories, jobsPerPage } from "@/constants/jobs";
 import { fetchJobs } from "@/services/jobs";
 import { Job, JobData } from "@/types/jobs";
-import { queryClient } from "./App";
-import loadFiltersFromLS from "./utils/loadFiltersFromLS";
+import loadFiltersFromLS from "@/utils/loadFiltersFromLS";
 
 const JobListings = () => {
   const { savedSearchTerm, savedSelectedCategory, savedSortOption } =

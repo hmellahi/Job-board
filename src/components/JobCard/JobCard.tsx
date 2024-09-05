@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/Button";
 import {
   Card,
   CardContent,
@@ -5,11 +6,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/Card";
+import { Badge } from "@/components/ui/badge";
+import { Job } from "@/types/jobs";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
-import { Job } from "../../types/jobs";
-import { Badge } from "../ui/badge";
-import { Button } from "./components/ui/Button";
 
 const JobCard = ({ job }: { job: Job }) => {
   const [expanded, setExpanded] = useState(false);

@@ -1,4 +1,4 @@
-import { Button } from "./components/ui/Button";
+import { Button } from "@/components/ui/Button";
 import "./pagination.css";
 
 interface PaginationProps {
@@ -14,7 +14,7 @@ const Pagination = ({
   itemsPerPage,
   onPageChange,
 }: PaginationProps) => {
-  if (!totalItems) {
+  if (!totalItems){
     return <></>;
   }
 
