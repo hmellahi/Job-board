@@ -1,3 +1,4 @@
+import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import {
   Card,
@@ -6,7 +7,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/Card";
-import { Badge } from "@/components/ui/Badge";
 import { Job } from "@/types/jobs";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
@@ -29,7 +29,7 @@ const JobCard = ({ job }: { job: Job }) => {
           <CardDescription className="text-gray-400">
             {formattedDate}
           </CardDescription>
-          <Badge>{job.category}</Badge>
+          {job.category && <Badge>{job.category}</Badge>}
         </div>
         <Button
           variant="ghost"
