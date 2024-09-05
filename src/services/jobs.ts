@@ -30,7 +30,6 @@ const mapJobData = (jobsResponse: JobsApiResponse, page: number): JobData => {
 
 export const fetchJobs = async (page: number) => {
   try {
-    console.log("fetch " + page);
     const { VITE_API_KEY, VITE_API_URL, VITE_BOARD_KEY, VITE_USER_EMAIL } =
       import.meta.env;
 
