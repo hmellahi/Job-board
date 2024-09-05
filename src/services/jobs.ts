@@ -31,14 +31,15 @@ const mapJobData = (jobsResponse: JobsApiResponse, page: number): JobData => {
 export const fetchJobs = async (page: number) => {
   try {
     console.log("fetch " + page);
-    const { VITE_API_KEY, VITE_API_URL, VITE_BOARD_KEY } = import.meta.env;
+    const { VITE_API_KEY, VITE_API_URL, VITE_BOARD_KEY, VITE_USER_EMAIL } =
+      import.meta.env;
 
     const options = {
       params: { page, board_keys: [VITE_BOARD_KEY], limit: jobsPerPage },
       headers: {
         accept: "application/json",
         "X-Api-Key": VITE_API_KEY,
-        "X-USER-EMAIL": "hmellahi@proton.com",
+        "X-USER-EMAIL": VITE_USER_EMAIL,
       },
     };
 

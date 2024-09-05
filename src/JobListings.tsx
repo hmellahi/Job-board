@@ -130,8 +130,6 @@ const JobListings = () => {
     filterJobs(jobs, searchTerm, selectedCategory, sortOption);
     setCurrentPage(1);
 
-    console.log({ searchTerm, selectedCategory, sortOption });
-
     // Save filters to localStorage
     localStorage.setItem(
       "jobFilters",
