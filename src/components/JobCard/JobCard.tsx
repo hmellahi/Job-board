@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/Card";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@/components/ui/Badge";
 import { Job } from "@/types/jobs";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
