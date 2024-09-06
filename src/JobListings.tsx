@@ -104,6 +104,11 @@ const JobListings = () => {
 
   // Prefetch the next page!
   useEffect(() => {
+    //isPreviousData : what data the query is currently providing you
+    // true => The current data is from the previous query, and a new query is in flight.
+    // false => The data is up-to-date for the current query parameters.
+    // It ensures that you only prefetch the next page when you have the most current data for the current page.
+
     if (!isPreviousData && data?.hasMore) {
       queryClient.prefetchQuery({
         queryKey: ["jobs", currentPage + 1],
