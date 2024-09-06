@@ -100,7 +100,6 @@ const JobListings = () => {
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
-    
   };
 
   // Prefetch the next page!
