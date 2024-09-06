@@ -1,4 +1,4 @@
-const mock = {
+const mockJobsResponse = {
   code: 200,
   message: "Job searching results",
   meta: {
@@ -1708,4 +1708,4 @@ const mock = {
   },
 };
 
-export default mock;
+export default mockJobsResponse;
