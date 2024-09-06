@@ -7,6 +7,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/Select";
+import { useLocalStorage } from "@uidotdev/usehooks";
+
 import {
   DragDropContext,
   Draggable,
@@ -22,20 +24,17 @@ import Pagination from "@/components/pagination/Pagination";
 import { categories, jobsPerPage } from "@/constants/jobs";
 import { fetchJobs } from "@/services/jobs";
 import { Job, JobData } from "@/types/jobs";
-import loadFiltersFromLS from "@/utils/loadFiltersFromLS";
 
 const JobListings = () => {
-  const { savedSearchTerm, savedSelectedCategory, savedSortOption } =
-    loadFiltersFromLS();
-
   const [jobs, setJobs] = useState<Job[]>([]);
   const [filteredJobs, setFilteredJobs] = useState<Job[]>([]);
-  const [searchTerm, setSearchTerm] = useState<string>(savedSearchTerm);
-  const [selectedCategory, setSelectedCategory] = useState<string>(
-    savedSelectedCategory
+  const [searchTerm, setSearchTerm] = useLocalStorage("searchTerm", "");
+  const [selectedCategory, setSelectedCategory] = useLocalStorage(
+    "selectedCategory",
+    ""
   );
-  const [sortOption, setSortOption] = useState<string>(savedSortOption);
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [sortOption, setSortOption] = useLocalStorage("sortOption", "");
+  const [currentPage, setCurrentPage] = useState(1);
 
   const { data, isLoading, isError, isPreviousData } = useQuery<JobData>({
     queryKey: ["jobs", currentPage],
@@ -68,26 +67,21 @@ const JobListings = () => {
     setCurrentPage(1);
   };
 
-  const filterJobs = (
-    jobsList: Job[],
-    search: string,
-    category: string,
-    sort: string
-  ) => {
+  const filterJobs = (jobsList: Job[]) => {
     let result = jobsList.filter(
       (job) =>
-        job.name.toLowerCase().includes(search.toLowerCase()) &&
-        (category === "" || job.category === category)
+        job.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        (selectedCategory === "" || job.category === selectedCategory)
     );
 
-    if (sort === "date") {
+    if (sortOption === "date") {
       result.sort(
         (a, b) =>
           new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
       );
-    } else if (sort === "name") {
+    } else if (sortOption === "name") {
       result.sort((a, b) => a.name.localeCompare(b.name));
-    } else if (sort === "category") {
+    } else if (sortOption === "category") {
       result.sort((a, b) => a.category.localeCompare(b.category));
     }
 
@@ -106,6 +100,7 @@ const JobListings = () => {
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
+    
   };
 
   // Prefetch the next page!
@@ -122,23 +117,13 @@ const JobListings = () => {
     if (data) {
       const { jobs } = data;
       setJobs(jobs);
-      filterJobs(jobs, searchTerm, selectedCategory, sortOption);
+      filterJobs(jobs);
     }
   }, [data]);
 
   useEffect(() => {
-    filterJobs(jobs, searchTerm, selectedCategory, sortOption);
+    filterJobs(jobs);
     setCurrentPage(1);
-
-    // Save filters to localStorage
-    localStorage.setItem(
-      "jobFilters",
-      JSON.stringify({
-        searchTerm,
-        selectedCategory,
-        sortOption,
-      })
-    );
   }, [searchTerm, selectedCategory, sortOption]);
 
   if (isLoading) {
