@@ -53,6 +53,8 @@ test.describe("Job Listings E2E Tests", () => {
     // Check that each job card contains the selected category
     const count = await jobCards.count();
 
+    // 2 is the number of job cards with the selected category
+    // normally the count should be fetched from the API and not hardcoded
     expect(count).toBe(2);
 
     for (let i = 0; i < count; i++) {
