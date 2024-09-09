@@ -27,7 +27,6 @@ import { Job, JobData } from "@/types/jobs";
 import { isCaseInsensitiveEqual } from "./utils/isCaseInsensitiveEqual";
 
 const JobListings = () => {
-  const [jobs, setJobs] = useState<Job[]>([]);
   const [filteredJobs, setFilteredJobs] = useState<Job[]>([]);
   const [searchTerm, setSearchTerm] = useLocalStorage("searchTerm", "");
   const [selectedCategory, setSelectedCategory] = useLocalStorage(
@@ -64,11 +63,17 @@ const JobListings = () => {
     setSearchTerm("");
     setSelectedCategory("");
     setSortOption("");
-    setFilteredJobs(jobs);
+    if (data) {
+      setFilteredJobs(data.jobs);
+    }
     setCurrentPage(1);
   };
 
-  const filterJobs = (jobsList: Job[]) => {
+  const filterJobs = () => {
+    const jobsList = data?.jobs;
+
+    if (!jobsList?.length) return;
+
     let result = jobsList.filter(
       (job) =>
         job.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
@@ -124,16 +129,10 @@ const JobListings = () => {
     }
   }, [data, isPreviousData, currentPage, queryClient]);
 
-  useEffect(() => {
-    if (data) {
-      const { jobs } = data;
-      setJobs(jobs);
-      filterJobs(jobs);
-    }
-  }, [data]);
+  useEffect(filterJobs, [data]);
 
   useEffect(() => {
-    filterJobs(jobs);
+    filterJobs();
     setCurrentPage(1);
   }, [searchTerm, selectedCategory, sortOption]);
 
