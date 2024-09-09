@@ -24,6 +24,7 @@ import Pagination from "@/components/pagination/Pagination";
 import { categories, jobsPerPage } from "@/constants/jobs";
 import { fetchJobs } from "@/services/jobs";
 import { Job, JobData } from "@/types/jobs";
+import { isCaseInsensitiveEqual } from "./utils/isCaseInsensitiveEqual";
 
 const JobListings = () => {
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -71,7 +72,8 @@ const JobListings = () => {
     let result = jobsList.filter(
       (job) =>
         job.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        (selectedCategory === "" || job.category === selectedCategory)
+        (!selectedCategory ||
+          isCaseInsensitiveEqual(job.category, selectedCategory))
     );
 
     if (sortOption === "date") {
@@ -151,7 +153,7 @@ const JobListings = () => {
             placeholder="Search jobs..."
             value={searchTerm}
             onChange={handleSearch}
-            className="flex-grow bg-gray-800 text-white placeholder-gray-400 inline-block"
+            className="flex-grow bg-white text-gray-900 placeholder-gray-400 inline-block border-none"
           />
         </div>
 
@@ -208,7 +210,7 @@ const JobListings = () => {
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
-                        className="shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300"
+                        className="shadow-sm rounded-lg overflow-hidden hover:shadow-md transition-shadow duration-300"
                       >
                         <JobCard job={job} />
                       </li>

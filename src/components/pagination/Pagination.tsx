@@ -14,7 +14,7 @@ const Pagination = ({
   itemsPerPage,
   onPageChange,
 }: PaginationProps) => {
-  if (!totalItems){
+  if (!totalItems || totalItems < itemsPerPage){
     return <></>;
   }
 

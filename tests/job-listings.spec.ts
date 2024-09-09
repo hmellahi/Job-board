@@ -50,11 +50,11 @@ test.describe("Job Listings E2E Tests", () => {
     // Get all job cards
     const jobCards = page.locator(".job-card");
 
-    // Assert that there are job cards present
-    expect(jobCards).toBeTruthy();
-
     // Check that each job card contains the selected category
     const count = await jobCards.count();
+
+    expect(count).toBe(2);
+
     for (let i = 0; i < count; i++) {
       await expect(jobCards.nth(i)).toContainText(testCategory);
     }
