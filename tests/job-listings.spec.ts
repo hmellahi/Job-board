@@ -1,6 +1,7 @@
+import { categories, jobsPerPage } from "@/constants/jobs";
 import { expect, test, type Page } from "@playwright/test";
 
-const testCategory = "AI / Research & Development";
+const testCategory = categories[0];
 
 test.describe("Job Listings E2E Tests", () => {
   let page: Page;
@@ -29,14 +30,14 @@ test.describe("Job Listings E2E Tests", () => {
     // Reload the page to trigger the failed request
     await page.reload();
 
-    await page.waitForTimeout(10000);
-
     // Check that the error state is displayed (assuming the app shows an error message)
-    await expect(page.locator("text=Error fetching jobs")).toBeVisible();
+    await expect(page.locator("text=Error fetching jobs")).toBeVisible({
+      timeout: 10000,
+    }); // 10 seconds
   });
 
   test("should load and display job listings", async () => {
-    await expect(page.locator(".job-card")).toHaveCount(10);
+    await expect(page.locator(".job-card")).toHaveCount(jobsPerPage);
   });
 
   test("should search for jobs by name", async () => {
@@ -99,6 +100,76 @@ test.describe("Job Listings E2E Tests", () => {
     expect(lastJobTitle).toBe(sortedNames[sortedNames.length - 1]);
   });
 
+  test("should sort jobs by date", async () => {
+    // Click the sort dropdown and select "Date"
+    await page.click("text=Sort by");
+    await page.click("role=option >> text=Date");
+
+    // Wait for the sorting to take effect
+    await page.waitForTimeout(500);
+
+    // Get all job cards
+    const jobCards = await page.locator(".job-card").all();
+
+    // Extract dates from the job cards
+    const dates = await Promise.all(
+      jobCards.map(async (card) => {
+        const dateText = await card.locator(".job-card-date").textContent();
+        return new Date(dateText!);
+      })
+    );
+
+    // Create a copy of dates and sort it in descending order (most recent first)
+    const sortedDates = [...dates].sort((a, b) => b.getTime() - a.getTime());
+
+    // Check if dates are in descending order
+    expect(dates).toEqual(sortedDates);
+
+    // Optional: Check if the "Date" option is visually selected in the dropdown
+    const sortDropdown = await page.locator("text=Date");
+    await expect(sortDropdown).toBeVisible();
+  });
+
+  test("should sort jobs by category", async () => {
+    // Click the sort dropdown and select "Category"
+    await page.click("text=Sort by");
+    await page.click("role=option >> text=Category");
+
+    // Wait for the sorting to take effect
+    await page.waitForTimeout(500);
+
+    // Get all job cards
+    const jobCards = await page.locator(".job-card").all();
+
+    // Extract categories from the job cards
+    const categories = await Promise.all(
+      jobCards.map(async (card) => {
+        const categoryElement = card.locator(".job-card-category");
+        // Check if the category element exists (i.e., count is greater than 0)
+        const hasCategory = (await categoryElement.count()) > 0;
+
+        // If it exists, return the category text in lowercase; otherwise, return an empty string
+        if (!hasCategory) {
+          return "";
+        }
+
+        let categoryContent = await categoryElement.textContent();
+
+        return categoryContent?.toLowerCase();
+      })
+    );
+
+    // Create a copy of categories and sort it alphabetically
+    const sortedCategories = [...categories].sort((a, b) => a.localeCompare(b));
+
+    // Check if categories are in alphabetical order
+    expect(categories).toEqual(sortedCategories);
+
+    // Optional: Check if the "Category" option is visually selected in the dropdown
+    const sortDropdown = await page.locator("text=Category");
+    await expect(sortDropdown).toBeVisible();
+  });
+
   test("should allow reordering of jobs by drag and drop", async () => {
     // Get the first two job cards
     const firstJob = page.locator(".job-card").first();
@@ -132,8 +203,22 @@ test.describe("Job Listings E2E Tests", () => {
     await page.mouse.move(secondJobCenter.x, secondJobCenter.y, { steps: 20 });
     await page.mouse.up();
 
-    // Wait for any animations or updates to complete
-    await page.waitForTimeout(10000);
+    // Wait for the job cards to reorder
+    await page.waitForFunction(
+      ([firstJobTitle, secondJobTitle]) => {
+        const jobCards = Array.from(
+          document.querySelectorAll(".job-card .job-title")
+        );
+        const firstJob = jobCards[0];
+        const secondJob = jobCards[1];
+        return (
+          firstJob?.textContent !== firstJobTitle &&
+          secondJob?.textContent !== secondJobTitle
+        );
+      },
+      [firstJobTitle, secondJobTitle], // Pass arguments as an array
+      { timeout: 10000 } // Optional timeout
+    );
 
     // Get the new first two job cards after dragging
     const newFirstJob = page.locator(".job-card").first();
@@ -175,11 +260,14 @@ test.describe("Job Listings E2E Tests", () => {
   });
 
   test("should implement pagination", async () => {
+    // make it dynamic, in this case we only have 15 jobs...
     await expect(page.locator(".pagination")).toBeVisible();
     await page.click("text=Next");
     await expect(page.locator("text=Page 2 of")).toBeVisible();
+    await expect(page.locator("text=Next")).toBeDisabled();
     await page.click("text=Previous");
     await expect(page.locator("text=Page 1 of")).toBeVisible();
+    await expect(page.locator("text=Previous")).toBeDisabled();
   });
 
   test("should expand job card to show details", async () => {

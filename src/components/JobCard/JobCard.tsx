@@ -29,11 +29,11 @@ const JobCard = ({ job }: { job: Job }) => {
             <CardTitle className="job-title text-sm sm:text-lg md:text-xl font-semibold text-gray-900 capitalize">
               {job.name}
             </CardTitle>
-            <CardDescription className="text-xs sm:text-sm md:text-base text-gray-600">
+            <CardDescription className="text-xs sm:text-sm md:text-base text-gray-600 job-card-date">
               {formattedDate}
             </CardDescription>
             {job.category && (
-              <Badge className="border-none capitalize text-xs sm:text-sm">
+              <Badge className="job-card-category border-none capitalize text-xs sm:text-sm">
                 {job.category}
               </Badge>
             )}
