@@ -42,7 +42,7 @@ export const fetchJobs = async (page: number) => {
       },
     };
 
-    const { data } = await axios.get(VITE_API_URL, options);
+    const { data } = await axios.get<JobsApiResponse>(VITE_API_URL, options);
     return mapJobData(data, page);
   } catch (error) {
     console.error("Error fetching jobs:", error);
