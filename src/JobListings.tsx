@@ -93,8 +93,13 @@ const JobListings = () => {
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) return;
 
+    // copy the jobs array
     const items = Array.from(filteredJobs);
+
+    // remove the dragged item from the list
     const [reorderedItem] = items.splice(result.source.index, 1);
+
+    // Re-insert the item in the new position where it was dragged
     items.splice(result.destination.index, 0, reorderedItem);
 
     setFilteredJobs(items);
