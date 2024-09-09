@@ -24,17 +24,18 @@ const JobCard = ({ job }: { job: Job }) => {
     <Card className="w-full !bg-gray-200 text-gray-900 job-card border-none">
       <CardHeader className="flex flex-row items-center justify-between">
         <div className="flex gap-2 items-center">
-          <DragHandleDots2Icon className="w-6 h-6 mr-2 text-gray-900" />{" "}
-          {/* Smaller and positioned */}
+          <DragHandleDots2Icon className="w-5 h-5 mr-2 text-gray-900" />
           <div>
-            <CardTitle className="job-title text-xl font-semibold text-gray-900 capitalize">
+            <CardTitle className="job-title text-sm sm:text-lg md:text-xl font-semibold text-gray-900 capitalize">
               {job.name}
             </CardTitle>
-            <CardDescription className="text-gray-600">
+            <CardDescription className="text-xs sm:text-sm md:text-base text-gray-600">
               {formattedDate}
             </CardDescription>
             {job.category && (
-              <Badge className="border-none capitalize">{job.category}</Badge>
+              <Badge className="border-none capitalize text-xs sm:text-sm">
+                {job.category}
+              </Badge>
             )}
           </div>
         </div>
@@ -56,27 +57,29 @@ const JobCard = ({ job }: { job: Job }) => {
       </CardHeader>
       {expanded && (
         <CardContent className="text-gray-700 job-card-details">
-          <p className="mb-3 whitespace-pre-line">{job.summary}</p>
+          <p className="mb-3 text-sm sm:text-base md:text-lg whitespace-pre-line">
+            {job.summary}
+          </p>
           <div className="space-y-2">
-            <p>
+            <p className="text-xs sm:text-sm md:text-base">
               <span className="font-semibold text-gray-900">
                 Required Skills:
               </span>{" "}
               {job.requiredSkills.join(", ")}
             </p>
-            <p>
+            <p className="text-xs sm:text-sm md:text-base">
               <span className="font-semibold text-gray-900">Start Date:</span>{" "}
-              {job.startDate}
+              {formattedDate}
             </p>
-            <p>
+            <p className="text-xs sm:text-sm md:text-base">
               <span className="font-semibold text-gray-900">Salary:</span>{" "}
               {job.location.text}
             </p>
-            <p>
+            <p className="text-xs sm:text-sm md:text-base">
               <span className="font-semibold text-gray-900">Category:</span>{" "}
               {job.category || "-"}
             </p>
-            <p>
+            <p className="text-xs sm:text-sm md:text-base">
               <span className="font-semibold text-gray-900">Company:</span>{" "}
               {job.company || "-"}
             </p>
